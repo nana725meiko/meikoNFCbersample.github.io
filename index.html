@@ -1,0 +1,282 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#09090a">
+<title>昨夜の店内 | HUNG O BAR</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,500;1,300;1,400&family=Shippori+Mincho:wght@500;600&family=Zen+Kaku+Gothic+New:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#09090a;--panel:#0f0e0c;--ink:#ece4d2;--sub:#8f866f;--gold:#c2a15f;--gold-hi:#e8d5a0;--line:rgba(194,161,95,.24)}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{position:relative;overflow-x:hidden;background:var(--bg);color:var(--ink);font-family:"Zen Kaku Gothic New",system-ui,sans-serif;line-height:1.9;min-height:100vh;padding:calc(26px + env(safe-area-inset-top,0px)) 28px calc(64px + env(safe-area-inset-bottom,0px))}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.07;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
+.spot{position:fixed;inset:0;pointer-events:none;background:radial-gradient(460px circle at var(--mx,50%) var(--my,22%),rgba(194,161,95,.13),transparent 62%)}
+main{position:relative;max-width:540px;margin:0 auto}
+.top{display:flex;justify-content:space-between;align-items:baseline;font-family:"Cormorant Garamond",serif;color:var(--gold);padding-bottom:14px;position:relative}
+.top::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;background:var(--line);transform-origin:left}
+.brand{font-weight:500;font-size:1.05rem;letter-spacing:.34em}
+.est{font-style:italic;font-weight:300;font-size:1.05rem}
+.stage{position:relative;width:100%;aspect-ratio:1;margin:30px auto 0}
+canvas{position:absolute;inset:0;width:100%;height:100%}
+.center{position:absolute;inset:0;display:grid;place-content:center;text-align:center}
+.kicker{margin:0;font-family:"Cormorant Garamond",serif;font-style:italic;font-weight:300;font-size:calc(var(--R,200px)*.09);color:var(--gold)}
+.big{margin:0;font-family:"Cormorant Garamond",serif;font-weight:300;font-size:calc(var(--R,200px)*.36);line-height:1;letter-spacing:-.03em;color:var(--gold-hi);font-variant-numeric:lining-nums;background:linear-gradient(100deg,var(--gold-hi) 42%,#fffaf0 50%,var(--gold-hi) 58%) 120% 0/260% 100%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+h1{margin:6px 0 0;font-family:"Shippori Mincho",serif;font-weight:500;font-size:calc(var(--R,200px)*.07);letter-spacing:.4em;padding-left:.4em;color:var(--sub)}
+.cue{display:flex;flex-direction:column;align-items:center;gap:8px;margin-top:6px;color:var(--sub);font-family:"Cormorant Garamond",serif;font-style:italic;font-size:.95rem}
+.cue i{width:1px;height:38px;background:linear-gradient(var(--gold),transparent);transform-origin:top}
+.marquee{overflow:hidden;margin:44px -28px 52px;border-block:1px solid var(--line);padding:12px 0}
+.track{display:flex;width:max-content}
+.track span{white-space:nowrap;padding-right:.6em;font-family:"Cormorant Garamond",serif;font-style:italic;font-weight:300;font-size:clamp(2.3rem,9vw,3.3rem);line-height:1.3;color:transparent;-webkit-text-stroke:1px rgba(194,161,95,.75)}
+.msg{margin:0 0 44px;padding:2px 0 2px 22px;border-left:1px solid var(--gold);font-family:"Shippori Mincho",serif;font-weight:500;font-size:1.45rem;line-height:2.1;overflow-wrap:anywhere}
+.player{padding:8px;border:1px solid var(--line);border-radius:16px;background:var(--panel);box-shadow:0 34px 80px -34px rgba(194,161,95,.4);transition:transform .25s ease-out}
+iframe{width:100%;height:352px;border:0;border-radius:10px;display:block;background:var(--panel)}
+.open{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding:19px 24px;border:1px solid rgba(194,161,95,.55);border-radius:999px;color:var(--gold-hi);text-decoration:none;font-weight:500;letter-spacing:.12em;transition:background .35s,color .35s}
+.open span{transition:transform .35s}
+.open:hover{background:var(--gold-hi);color:#0a0a0a}
+.open:hover span{transform:translateX(6px)}
+.open:focus-visible,.past button:focus-visible{outline:2px solid var(--gold-hi);outline-offset:3px}
+.note{margin:14px 4px 0;color:var(--sub);font-size:.8rem}
+h2{margin:72px 0 6px;font-family:"Cormorant Garamond",serif;font-style:italic;font-weight:300;font-size:1.6rem;color:var(--gold)}
+h2 small{margin-left:12px;font-family:"Zen Kaku Gothic New",sans-serif;font-style:normal;font-size:.78rem;letter-spacing:.3em;color:var(--sub)}
+.past{border-top:1px solid var(--line)}
+.past button{width:100%;display:grid;grid-template-columns:auto 1fr auto;gap:20px;align-items:center;padding:20px 8px;font:inherit;color:var(--ink);background:linear-gradient(90deg,rgba(194,161,95,.14),rgba(194,161,95,.14)) no-repeat 0 0/0 100%;border:0;border-bottom:1px solid var(--line);text-align:left;cursor:pointer;transition:background-size .5s}
+.past button:hover{background-size:100% 100%}
+.past .d{font-family:"Cormorant Garamond",serif;font-size:1.45rem;font-weight:300;color:var(--gold-hi)}
+.past .m{color:var(--sub);font-size:.9rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.past .a{color:var(--gold);transition:transform .3s}
+.past button:hover .a{transform:translateX(6px)}
+.ch{display:inline-block}
+.w{display:inline-block;white-space:nowrap}
+.empty{color:var(--sub);padding:40px 0;text-align:center}
+@media (prefers-reduced-motion:no-preference){
+ .rise{animation:rise 1s cubic-bezier(.2,.7,.2,1) both;animation-delay:calc(var(--i,0) * 110ms)}
+ @keyframes rise{from{opacity:0;transform:translateY(18px)}}
+ .top::after{animation:draw 1.4s cubic-bezier(.2,.7,.2,1) .2s both}
+ @keyframes draw{from{transform:scaleX(0)}}
+ .stage{animation:zoom 2s cubic-bezier(.2,.7,.2,1) .3s both}
+ @keyframes zoom{from{opacity:0;transform:scale(.84) rotate(-10deg)}}
+ .big{animation:sheen 7s ease-in-out 2.4s infinite}
+ @keyframes sheen{0%,55%{background-position:120% 0}100%{background-position:-20% 0}}
+ .cue i{animation:cue 2s ease-in-out infinite}
+ @keyframes cue{0%{transform:scaleY(0)}50%{transform:scaleY(1)}100%{transform:scaleY(1);opacity:0}}
+ .track{animation:slide 32s linear infinite}
+ @keyframes slide{to{transform:translateX(-50%)}}
+ .ch{animation:chin .8s cubic-bezier(.2,.7,.2,1) both;animation-delay:calc(900ms + var(--c,0) * 60ms)}
+ @keyframes chin{from{opacity:0;transform:translateY(.55em);filter:blur(6px)}}
+ .reveal{opacity:0;transform:translateY(26px);transition:opacity .9s cubic-bezier(.2,.7,.2,1),transform .9s cubic-bezier(.2,.7,.2,1),background-size .5s}
+ .reveal.in{opacity:1;transform:none}
+}
+</style>
+</head>
+<body>
+<div class="spot" aria-hidden="true"></div>
+<main>
+  <header class="top rise"><span class="brand">HUNG O BAR</span><span class="est">6th Anniversary</span></header>
+  <section class="stage" id="stage">
+    <canvas id="art" aria-hidden="true"></canvas>
+    <div class="center">
+      <p class="kicker">Last Night</p>
+      <p class="big" id="big">––.––</p>
+      <h1>昨夜の店内</h1>
+    </div>
+  </section>
+  <div class="cue rise" style="--i:6" aria-hidden="true">Scroll<i></i></div>
+  <div class="marquee" aria-hidden="true"><div class="track">
+    <span>HUNG O BAR · 6th Anniversary · Last Night ·</span><span>HUNG O BAR · 6th Anniversary · Last Night ·</span>
+  </div></div>
+  <div id="app"><p class="empty">読み込み中です…</p></div>
+</main>
+<script>
+const API_URL = 'https://script.google.com/macros/s/AKfycbxxhOcdfbiSnWkIbaymaKrlpP9oS04Q2DWcmdEVuFsz7Blpc0qKf_RBwsEadUpvKvdZlw/exec';
+
+const app = document.getElementById('app');
+const big = document.getElementById('big');
+const stage = document.getElementById('stage');
+const cv = document.getElementById('art');
+const ctx = cv.getContext('2d');
+let items = [];
+
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+if (!reduce){
+  const root = document.documentElement.style;
+  addEventListener('pointermove', e => { root.setProperty('--mx', e.clientX + 'px'); root.setProperty('--my', e.clientY + 'px'); }, {passive: true});
+}
+const io = new IntersectionObserver(es => es.forEach(e => {
+  if (e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); }
+}), {threshold: .15});
+
+/* ---- プレイリストIDから、その夜だけの模様をつくる ---- */
+function seedFrom(s){ let h = 1779033703 ^ s.length; for (let i = 0; i < s.length; i++){ h = Math.imul(h ^ s.charCodeAt(i), 3432918353); h = h << 13 | h >>> 19; } return h >>> 0; }
+function rng(a){ return () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+let art = null, raf = 0;
+function setArt(id){
+  const r = rng(seedFrom(id));
+  art = {
+    rings: Array.from({length: 30}, (_, k) => ({k, start: r() * 6.28, sweep: .5 + r() * 4.2, speed: (r() - .5) * .5, w: .6 + r() * 1.8, a: .25 + r() * .6, ph: r() * 6.28, f: .4 + r() * 1.2})),
+    bars: Array.from({length: 132}, () => ({f1: .6 + r() * 2.2, f2: 1.5 + r() * 3, p1: r() * 6.28, p2: r() * 6.28, m: .35 + r() * .65})),
+    dust: Array.from({length: 70}, () => ({x: r(), y: r(), s: .4 + r() * 1.6, v: .02 + r() * .05, p: r() * 6.28}))
+  };
+  cancelAnimationFrame(raf);
+  raf = requestAnimationFrame(frame);
+}
+function size(){
+  const d = Math.min(devicePixelRatio || 1, 2), w = cv.clientWidth;
+  cv.width = w * d; cv.height = w * d;
+  ctx.setTransform(d, 0, 0, d, 0, 0);
+  stage.style.setProperty('--R', (w / 2) + 'px');
+}
+function frame(ts){
+  const t = reduce ? 4 : ts / 1000, w = cv.clientWidth, c = w / 2, R = c * .98;
+  ctx.clearRect(0, 0, w, w);
+  ctx.fillStyle = '#e8d5a0';
+  art.dust.forEach(p => {
+    const y = ((p.y - t * p.v) % 1 + 1) % 1;
+    ctx.globalAlpha = .2 + .35 * Math.sin(t + p.p) ** 2;
+    ctx.beginPath(); ctx.arc(p.x * w, y * w, p.s, 0, 6.283); ctx.fill();
+  });
+  ctx.lineCap = 'round';
+  ctx.globalAlpha = .1; ctx.lineWidth = 1; ctx.strokeStyle = '#e8d5a0';
+  for (let q = .5; q < .82; q += .02){ ctx.beginPath(); ctx.arc(c, c, R * q, 0, 6.283); ctx.stroke(); }
+  ctx.strokeStyle = '#c2a15f';
+  art.rings.forEach(g => {
+    const rad = R * (.5 + .3 * g.k / 29) * (1 + .012 * Math.sin(t * g.f + g.ph)), a0 = g.start + t * g.speed;
+    ctx.globalAlpha = g.a; ctx.lineWidth = g.w;
+    ctx.beginPath(); ctx.arc(c, c, rad, a0, a0 + g.sweep); ctx.stroke();
+  });
+  const n = art.bars.length;
+  ctx.lineWidth = 2;
+  art.bars.forEach((b, i) => {
+    const ang = i / n * 6.283 - 1.5708 + t * .05;
+    const h = (.5 + .5 * Math.sin(t * b.f1 + b.p1)) * (.5 + .5 * Math.sin(t * b.f2 + b.p2)) * b.m;
+    const r1 = R * .84, r2 = r1 + R * .14 * (.12 + h);
+    ctx.globalAlpha = .5 + .5 * h;
+    ctx.strokeStyle = h > .55 ? '#e8d5a0' : '#c2a15f';
+    ctx.beginPath(); ctx.moveTo(c + Math.cos(ang) * r1, c + Math.sin(ang) * r1); ctx.lineTo(c + Math.cos(ang) * r2, c + Math.sin(ang) * r2); ctx.stroke();
+  });
+  ctx.globalAlpha = 1;
+  if (!reduce) raf = requestAnimationFrame(frame);
+}
+addEventListener('resize', () => { size(); if (reduce) frame(0); });
+size();
+setArt('HUNGOBAR6');
+
+function tilt(box){
+  if (reduce || !matchMedia('(hover: hover)').matches) return;
+  box.addEventListener('pointermove', e => {
+    const r = box.getBoundingClientRect(), x = (e.clientX - r.left) / r.width - .5, y = (e.clientY - r.top) / r.height - .5;
+    box.style.transform = 'perspective(900px) rotateX(' + (-y * 5) + 'deg) rotateY(' + (x * 6) + 'deg)';
+  });
+  box.addEventListener('pointerleave', () => { box.style.transform = ''; });
+}
+
+function embedUrl(id){ return 'https://open.spotify.com/embed/playlist/' + id + '?utm_source=generator&theme=0'; }
+function spotifyUrl(id){ return 'https://open.spotify.com/playlist/' + id; }
+function el(tag, cls, text, i){
+  const e = document.createElement(tag);
+  e.className = (cls || '') + ' rise';
+  e.style.setProperty('--i', i || 0);
+  if (text) e.textContent = text;
+  return e;
+}
+function bigDate(d){
+  const m = String(d).match(/(\d{1,2})\/(\d{1,2})/);
+  return m ? m[1].padStart(2, '0') + '.' + m[2].padStart(2, '0') : String(d);
+}
+
+let rollTok = 0;
+function rollDate(target){
+  const tok = ++rollTok;
+  if (reduce || !/^\d\d\.\d\d$/.test(target)){ big.textContent = target; return; }
+  const digits = target.replace('.', '').split('');
+  const settle = [900, 1150, 1400, 1650];
+  const t0 = performance.now();
+  (function tick(now){
+    if (tok !== rollTok) return;
+    const e = now - t0;
+    let out = '';
+    digits.forEach((d, k) => { out += e >= settle[k] ? d : Math.floor(Math.random() * 10); if (k === 1) out += '.'; });
+    big.textContent = out;
+    if (e < settle[3]) requestAnimationFrame(tick);
+  })(t0);
+}
+
+function typeIn(node, text){
+  let c = 0;
+  const mk = ch => { const s = document.createElement('span'); s.className = 'ch'; s.style.setProperty('--c', c++); s.textContent = ch; return s; };
+  (text.match(/[\x21-\x7E]+|\s|[\s\S]/gu) || []).forEach(t => {
+    if (t === '\n'){ node.appendChild(document.createElement('br')); }
+    else if (/^\s$/.test(t)){ node.appendChild(document.createTextNode(' ')); c++; }
+    else if (/^[\x21-\x7E]+$/.test(t)){
+      const w = document.createElement('span');
+      w.className = 'w';
+      [...t].forEach(ch => w.appendChild(mk(ch)));
+      node.appendChild(w);
+    } else { node.appendChild(mk(t)); }
+  });
+}
+
+function render(i){
+  const it = items[i];
+  setArt(it.id);
+  rollDate(bigDate(it.date));
+  app.innerHTML = '';
+  let n = 1;
+  if (it.message){ const q = el('blockquote', 'msg', '', n++); typeIn(q, it.message); app.appendChild(q); }
+  const box = el('div', 'player', '', n++);
+  const f = document.createElement('iframe');
+  f.src = embedUrl(it.id);
+  f.title = 'Spotifyプレイリスト';
+  f.allow = 'encrypted-media';
+  f.loading = 'lazy';
+  box.appendChild(f);
+  tilt(box);
+  app.appendChild(box);
+  const a = el('a', 'open', '', n++);
+  a.href = spotifyUrl(it.id);
+  a.target = '_blank';
+  a.rel = 'noopener';
+  a.appendChild(document.createTextNode('Spotifyアプリで開く'));
+  a.appendChild(Object.assign(document.createElement('span'), {textContent: '→'}));
+  app.appendChild(a);
+  app.appendChild(el('p', 'note', 'Spotifyにログインしていないと、試聴のみになります。', n++));
+  if (items.length > 1){
+    const h = el('h2', '', 'Archive', n++);
+    h.appendChild(Object.assign(document.createElement('small'), {textContent: 'これまでの夜'}));
+    app.appendChild(h);
+    const list = document.createElement('div');
+    list.className = 'past';
+    items.forEach((x, j) => {
+      if (j === i) return;
+      const b = document.createElement('button');
+      b.type = 'button';
+      [['d', x.date], ['m', x.message], ['a', '→']].forEach(([c, t]) => {
+        const s = document.createElement('span');
+        s.className = c;
+        s.textContent = t;
+        b.appendChild(s);
+      });
+      b.addEventListener('click', () => { render(j); window.scrollTo({top: 0, behavior: 'smooth'}); });
+      b.classList.add('reveal');
+      b.style.transitionDelay = (list.children.length * 70) + 'ms';
+      list.appendChild(b);
+      io.observe(b);
+    });
+    app.appendChild(list);
+  }
+}
+
+fetch(API_URL)
+  .then(r => r.json())
+  .then(d => {
+    items = d.items || [];
+    if (!items.length){ app.innerHTML = '<p class="empty">まだ公開されていません。しばらくしてからもう一度開いてください。</p>'; return; }
+    render(0);
+  })
+  .catch(() => { app.innerHTML = '<p class="empty">読み込めませんでした。電波の良い場所で、もう一度開いてください。</p>'; });
+</script>
+</body>
+</html>
